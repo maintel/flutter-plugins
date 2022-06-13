@@ -12,6 +12,8 @@ public class PasteboardPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "image":
       image(result: result)
+    case "writeImage":
+       writeImage(call: call ,result: result)
     case "files":
       files(result: result)
     case "writeFiles":
@@ -24,6 +26,19 @@ public class PasteboardPlugin: NSObject, FlutterPlugin {
       result(FlutterMethodNotImplemented)
     }
   }
+  
+    private func writeImage(call: FlutterMethodCall,result: FlutterResult){
+        if let arguments = call.arguments as? FlutterStandardTypedData {
+            NSPasteboard.general.clearContents()
+            if NSPasteboard.general.setData(arguments.data, forType: NSPasteboard.PasteboardType.tiff) {
+                result(0)
+            }else {
+                result(FlutterError(code: "0", message: "img data error.", details: nil))
+            }
+        }else {
+            result(FlutterError(code: "0", message: "img data null.", details: nil))
+        }
+    }
 
   private func image(result: FlutterResult) {
     guard let image = NSPasteboard.general.readObjects(forClasses: [NSImage.self], options: nil)?.first as? NSImage else {
