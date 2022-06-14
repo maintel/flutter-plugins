@@ -61,8 +61,17 @@ class PasteboardPlatformIO implements PasteboardPlatform {
     if (image == null) {
       return;
     }
-    if (Platform.isIOS) {
+    if (Platform.isIOS || Platform.isMacOS) {
       await _channel.invokeMethod<void>('writeImage', image);
+    }
+  }
+  
+  Future<void> writeImageByPath(String? image) async {
+    if (image == null || image.isEmpty) {
+      return;
+    }
+    if (Platform.isWindows) {
+      await _channel.invokeMethod<void>('writeImageByPath', image);
     }
   }
 
